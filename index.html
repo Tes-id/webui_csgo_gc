@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Конфигуратор предметов CS:GO</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #1e1e2f;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .app {
+            width: 1400px;
+            max-width: 100%;
+            background: #2d2d44;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            color: #e0e0e0;
+        }
+        .main-panel {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .left {
+            flex: 2;
+            min-width: 300px;
+        }
+        .right {
+            flex: 1;
+            min-width: 250px;
+            background: #252535;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        h2, h3 {
+            margin-top: 0;
+            color: #b0b0d0;
+            font-weight: 400;
+            border-bottom: 1px solid #3f3f5a;
+            padding-bottom: 8px;
+        }
+        .info-panel {
+            background: #1f1f2e;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid #6a5acd;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #c0c0dd;
+        }
+        .info-panel h4 {
+            margin: 0 0 8px 0;
+            color: #b0b0ff;
+            font-weight: 400;
+        }
+        .info-panel p {
+            margin: 6px 0;
+        }
+        .info-panel .bug {
+            color: #ffa07a;
+        }
+        .info-panel .credits {
+            margin-top: 10px;
+            font-style: italic;
+            color: #8a8ab0;
+        }
+        .menu-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        button {
+            background: #3a3a55;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border: 1px solid #5a5a7a;
+        }
+        button:hover {
+            background: #4f4f70;
+            transform: translateY(-2px);
+        }
+        button.primary {
+            background: #6a5acd;
+            border-color: #8a7ae0;
+        }
+        button.primary:hover {
+            background: #7e6ee0;
+        }
+        button.danger {
+            background: #8b3a3a;
+            border-color: #b35e5e;
+        }
+        button.danger:hover {
+            background: #a54c4c;
+        }
+        button:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .form-card {
+            background: #252535;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .field {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #aaaac0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        select, input {
+            width: 100%;
+            background: #1a1a28;
+            border: 1px solid #404060;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 30px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        select:focus, input:focus {
+            border-color: #8a7ae0;
+        }
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+        .row .field {
+            flex: 1;
+        }
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .item-card {
+            background: #2f2f45;
+            border-radius: 30px;
+            padding: 8px 16px 8px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #4a4a6a;
+        }
+        .item-title {
+            font-weight: 500;
+            font-size: 15px;
+            word-break: break-word;
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff8a8a;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 6px;
+            line-height: 1;
+            box-shadow: none;
+            transform: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .delete-btn:hover {
+            background: #4a2a2a;
+            color: #ff5e5e;
+            transform: scale(1.1);
+        }
+        .export-btn {
+            width: 100%;
+            margin-top: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .placeholder {
+            color: #6a6a8a;
+            text-align: center;
+            padding: 32px 16px;
+            font-style: italic;
+        }
+        optgroup {
+            color: #c0c0e0;
+            background: #2a2a3a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <h1>⚙️ Конфигуратор предметов CS:GO</h1>
+    <div class="info-panel">
+        <h4>🧪 ВебUI инвентаря для csgo gc</h4>
+        <p><strong>Как пользоваться:</strong><br>
+        - В папке csgo_gc, в текстовике inventory смотришь номер последнего предмета в items<br>
+        - и вписываешь его в поле справа<br>
+        - Выбираешь что тебе нужно<br>
+        - Ищешь нужный тебе скин на сайте со скинами, к примеру <a href="https://csgoskins.gg/" target="_blank" style="color:#aaccff;">https://csgoskins.gg/</a><br>
+        - Берёшь со скина "Finish catalog", остальное настраиваешь как тебе угодно<br>
+        - Экспортируешь файл и закидываешь в папку csgo_gc</p>
+        <p class="bug"><strong>Известные баги:</strong><br>
+        - не заменяются иконки старых предметов (исправлено через костыль)<br>
+        - неправильная редкость у некоторых типов предметов (похуй мне, веришь?)</p>
+        <p class="credits">credits: навайбкодил Tesid</p>
+    </div>
+    <div class="main-panel">
+        <div class="left">
+            <div class="menu-buttons">
+                <button id="btnSkin">🔫 Добавить скин</button>
+                <button id="btnAgent">🕵️ Добавить агента</button>
+                <button id="btnGloves">🧤 Добавить перчатки</button>
+                <button id="btnSticker">🔖 Добавить наклейку</button>
+                <button id="btnCase">📦 Добавить кейс</button>
+                <button id="btnExit" class="danger">⏻ Выход</button>
+            </div>
+            <div id="skinForm" class="form-card">
+                <h3>Новый скин</h3>
+                <div class="field">
+                    <label>1. Оружие</label>
+                    <select id="weaponSelect"></select>
+                </div>
+                <div class="field">
+                    <label>2. Качество</label>
+                    <select id="qualitySelect"></select>
+                </div>
+                <div class="field">
+                    <label>3. Редкость</label>
+                    <select id="raritySelect"></select>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>4. Finish catalog (ID)</label>
+                        <input type="number" id="finishInput" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Паттерн</label>
+                        <input type="number" id="patternInput" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Флоат</label>
+                        <input type="number" id="floatInput" step="any" value="0.0">
+                    </div>
+                </div>
+                <button id="addSkinBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить скин</button>
+            </div>
+            <div id="agentForm" class="form-card hidden">
+                <h3>Новый агент</h3>
+                <div class="field">
+                    <label>ID агента</label>
+                    <select id="agentSelect"></select>
+                </div>
+                <button id="addAgentBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить агента</button>
+            </div>
+            <div id="glovesForm" class="form-card hidden">
+                <h3>Новые перчатки</h3>
+                <div class="field">
+                    <label>Тип перчаток</label>
+                    <select id="glovesSelect"></select>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Finish catalog (ID)</label>
+                        <input type="number" id="glovesFinish" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Паттерн</label>
+                        <input type="number" id="glovesPattern" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Флоат</label>
+                        <input type="number" id="glovesFloat" step="any" value="0.0">
+                    </div>
+                </div>
+                <button id="addGlovesBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить перчатки</button>
+            </div>
+            <div id="stickerPlaceholder" class="form-card hidden placeholder">
+                🔖 Раздел «Наклейки» в разработке
+            </div>
+            <div id="casePlaceholder" class="form-card hidden placeholder">
+                📦 Раздел «Кейсы» в разработке
+            </div>
+        </div>
+        <div class="right">
+            <h3>📦 Добавленные предметы</h3>
+            <div id="itemsContainer" class="item-list">
+                <div class="placeholder">Пока ничего нет</div>
+            </div>
+            <div class="field">
+                <label>Last item ID</label>
+                <input type="number" id="lastIdInput" min="0" value="20" step="1">
+            </div>
+            <button id="exportBtn" class="export-btn primary" disabled>📥 Экспорт в inventory.txt</button>
+        </div>
+    </div>
+</div>
+<script>
+    (function() {
+        const weapons = [
+            { id: 1, name: "weapon_deagle" },
+            { id: 2, name: "weapon_elite" },
+            { id: 3, name: "weapon_fiveseven" },
+            { id: 4, name: "weapon_glock" },
+            { id: 7, name: "weapon_ak47" },
+            { id: 8, name: "weapon_aug" },
+            { id: 9, name: "weapon_awp" },
+            { id: 10, name: "weapon_famas" },
+            { id: 11, name: "weapon_g3sg1" },
+            { id: 13, name: "weapon_galilar" },
+            { id: 14, name: "weapon_m249" },
+            { id: 16, name: "weapon_m4a1" },
+            { id: 17, name: "weapon_mac10" },
+            { id: 19, name: "weapon_p90" },
+            { id: 20, name: "weapon_zone_repulsor" },
+            { id: 23, name: "weapon_mp5sd" },
+            { id: 24, name: "weapon_ump45" },
+            { id: 25, name: "weapon_xm1014" },
+            { id: 26, name: "weapon_bizon" },
+            { id: 27, name: "weapon_mag7" },
+            { id: 28, name: "weapon_negev" },
+            { id: 29, name: "weapon_sawedoff" },
+            { id: 30, name: "weapon_tec9" },
+            { id: 31, name: "weapon_taser" },
+            { id: 32, name: "weapon_hkp2000" },
+            { id: 33, name: "weapon_mp7" },
+            { id: 34, name: "weapon_mp9" },
+            { id: 35, name: "weapon_nova" },
+            { id: 36, name: "weapon_p250" },
+            { id: 37, name: "weapon_shield" },
+            { id: 38, name: "weapon_scar20" },
+            { id: 39, name: "weapon_sg556" },
+            { id: 40, name: "weapon_ssg08" },
+            { id: 41, name: "weapon_knifegg" },
+            { id: 42, name: "weapon_knife" },
+            { id: 43, name: "weapon_flashbang" },
+            { id: 44, name: "weapon_hegrenade" },
+            { id: 45, name: "weapon_smokegrenade" },
+            { id: 46, name: "weapon_molotov" },
+            { id: 47, name: "weapon_decoy" },
+            { id: 48, name: "weapon_incgrenade" },
+            { id: 49, name: "weapon_c4" },
+            { id: 50, name: "item_kevlar" },
+            { id: 51, name: "item_assaultsuit" },
+            { id: 52, name: "item_heavyassaultsuit" },
+            { id: 54, name: "item_nvg" },
+            { id: 55, name: "item_defuser" },
+            { id: 56, name: "item_cutters" },
+            { id: 57, name: "weapon_healthshot" },
+            { id: 58, name: "musickit_default" },
+            { id: 59, name: "weapon_knife_t" },
+            { id: 60, name: "weapon_m4a1_silencer" },
+            { id: 61, name: "weapon_usp_silencer" },
+            { id: 62, name: "Recipe Trade Up" },
+            { id: 63, name: "weapon_cz75a" },
+            { id: 64, name: "weapon_revolver" },
+            { id: 68, name: "weapon_tagrenade" },
+            { id: 69, name: "weapon_fists" },
+            { id: 70, name: "weapon_breachcharge" },
+            { id: 72, name: "weapon_tablet" },
+            { id: 74, name: "weapon_melee" },
+            { id: 75, name: "weapon_axe" },
+            { id: 76, name: "weapon_hammer" },
+            { id: 78, name: "weapon_spanner" },
+            { id: 80, name: "weapon_knife_ghost" },
+            { id: 81, name: "weapon_firebomb" },
+            { id: 82, name: "weapon_diversion" },
+            { id: 83, name: "weapon_frag_grenade" },
+            { id: 84, name: "weapon_snowball" },
+            { id: 85, name: "weapon_bumpmine" },
+            { id: 500, name: "weapon_bayonet" },
+            { id: 503, name: "weapon_knife_css" },
+            { id: 505, name: "weapon_knife_flip" },
+            { id: 506, name: "weapon_knife_gut" },
+            { id: 507, name: "weapon_knife_karambit" },
+            { id: 508, name: "weapon_knife_m9_bayonet" },
+            { id: 509, name: "weapon_knife_tactical" },
+            { id: 512, name: "weapon_knife_falchion" },
+            { id: 514, name: "weapon_knife_survival_bowie" },
+            { id: 515, name: "weapon_knife_butterfly" },
+            { id: 516, name: "weapon_knife_push" },
+            { id: 517, name: "weapon_knife_cord" },
+            { id: 518, name: "weapon_knife_canis" },
+            { id: 519, name: "weapon_knife_ursus" },
+            { id: 520, name: "weapon_knife_gypsy_jackknife" },
+            { id: 521, name: "weapon_knife_outdoor" },
+            { id: 522, name: "weapon_knife_stiletto" },
+            { id: 523, name: "weapon_knife_widowmaker" },
+            { id: 525, name: "weapon_knife_skeleton" }
+        ];
+        const qualities = [
+            { id: 0, name: "None (обычное)" },
+            { id: 1, name: "Genuine (высшей пробы)" },
+            { id: 2, name: "Vintage (старой закалки)" },
+            { id: 3, name: "★" }
+        ];
+        const rarities = [
+            { id: 0, name: "Default", color: "#ffffff" },
+            { id: 1, name: "Consumer Grade", color: "#b0b0b0" },
+            { id: 2, name: "Industrial Grade", color: "#5a9eff" },
+            { id: 3, name: "Mil-Spec Grade", color: "#4b6e9c" },
+            { id: 4, name: "Restricted", color: "#9b6bb0" },
+            { id: 5, name: "Classified", color: "#d64f9b" },
+            { id: 6, name: "Convert", color: "#ff5555" },
+            { id: 7, name: "Controbanned", color: "#ffd966" }
+        ];
+        const agents = [
+            { id: 4771, name: "Cmdr. Frank “Wet Sox” Baroud | SEAL Frogman", group: "CT" },
+            { id: 4711, name: "Cmdr. Mae “Dead Cold” Jamison | SWAT", group: "CT" },
+            { id: 5308, name: "Special Agent Ava | FBI", group: "CT" },
+            { id: 4750, name: "Chem-Haz Capitaine | Gendarmerie Nationale", group: "CT" },
+            { id: 4772, name: "Lieutenant Rex Krikey | SEAL Frogman", group: "CT" },
+            { id: 4712, name: "1st Lieutenant Farlow | SWAT", group: "CT" },
+            { id: 5403, name: "“Two Times” McCoy | TACP Cavalry", group: "CT" },
+            { id: 4619, name: "“Blueberries” Buckshot | NSWC SEAL", group: "CT" },
+            { id: 4753, name: "Officer Jacques Beltram | Gendarmerie Nationale", group: "CT" },
+            { id: 4715, name: "Sergeant Bombson | SWAT", group: "CT" },
+            { id: 5306, name: "Markus Delrow | FBI HRT", group: "CT" },
+            { id: 5602, name: "D Squadron Officer | NZSAS", group: "CT" },
+            { id: 5401, name: "Seal Team 6 Soldier | NSWC SEAL", group: "CT" },
+            { id: 5305, name: "Operator | FBI SWAT", group: "CT" },
+            { id: 4726, name: "Sir Bloody Miami Darryl | The Professionals", group: "T" },
+            { id: 4733, name: "Sir Bloody Silent Darryl | The Professionals", group: "T" },
+            { id: 5108, name: "The Elite Mr. Muhlik | Elite Crew", group: "T" },
+            { id: 4777, name: "Vypa Sista of the Revolution | Guerrilla Warfare", group: "T" },
+            { id: 4732, name: "Number K | The Professionals", group: "T" },
+            { id: 4727, name: "Safecracker Voltzmann | The Professionals", group: "T" },
+            { id: 5503, name: "Blackwolf | Sabre", group: "T" },
+            { id: 4730, name: "Getaway Sally | The Professionals", group: "T" },
+            { id: 5500, name: "Dragomir | Sabre", group: "T" },
+            { id: 4781, name: "Trapper | Guerrilla Warfare", group: "T" },
+            { id: 4778, name: "Trapper Aggressor | Guerrilla Warfare", group: "T" },
+            { id: 5109, name: "Jungle Rebel | Elite Crew", group: "T" },
+            { id: 5208, name: "Street Soldier | Phoenix", group: "T" }
+        ];
+        const gloves = [
+            { id: 5027, name: "Bloodhound" },
+            { id: 4725, name: "Broken Fang" },
+            { id: 5031, name: "Driver Gloves" },
+            { id: 5032, name: "Hand Wraps" },
+            { id: 5035, name: "Hydra Gloves" },
+            { id: 5033, name: "Moto Gloves" },
+            { id: 5034, name: "Specialist Gloves" },
+            { id: 5030, name: "Sport Gloves" }
+        ];
+        let items = [];
+        const skinForm = document.getElementById('skinForm');
+        const agentForm = document.getElementById('agentForm');
+        const glovesForm = document.getElementById('glovesForm');
+        const stickerPlaceholder = document.getElementById('stickerPlaceholder');
+        const casePlaceholder = document.getElementById('casePlaceholder');
+        const weaponSelect = document.getElementById('weaponSelect');
+        const qualitySelect = document.getElementById('qualitySelect');
+        const raritySelect = document.getElementById('raritySelect');
+        const finishInput = document.getElementById('finishInput');
+        const patternInput = document.getElementById('patternInput');
+        const floatInput = document.getElementById('floatInput');
+        const addSkinBtn = document.getElementById('addSkinBtn');
+        const agentSelect = document.getElementById('agentSelect');
+        const addAgentBtn = document.getElementById('addAgentBtn');
+        const glovesSelect = document.getElementById('glovesSelect');
+        const glovesFinish = document.getElementById('glovesFinish');
+        const glovesPattern = document.getElementById('glovesPattern');
+        const glovesFloat = document.getElementById('glovesFloat');
+        const addGlovesBtn = document.getElementById('addGlovesBtn');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const exportBtn = document.getElementById('exportBtn');
+        const lastIdInput = document.getElementById('lastIdInput');
+        const btnSkin = document.getElementById('btnSkin');
+        const btnAgent = document.getElementById('btnAgent');
+        const btnGloves = document.getElementById('btnGloves');
+        const btnSticker = document.getElementById('btnSticker');
+        const btnCase = document.getElementById('btnCase');
+        const btnExit = document.getElementById('btnExit');
+
+        function populateSelect(select, data, valueKey = 'id', labelKey = 'name') {
+            select.innerHTML = '';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item[valueKey];
+                option.textContent = item[labelKey];
+                select.appendChild(option);
+            });
+        }
+        function populateAgentSelect() {
+            agentSelect.innerHTML = '';
+            const ctGroup = document.createElement('optgroup');
+            ctGroup.label = 'CT Agents';
+            const tGroup = document.createElement('optgroup');
+            tGroup.label = 'T Agents';
+            agents.forEach(agent => {
+                const option = document.createElement('option');
+                option.value = agent.id;
+                option.textContent = agent.name;
+                if (agent.group === 'CT') ctGroup.appendChild(option);
+                else tGroup.appendChild(option);
+            });
+            agentSelect.appendChild(ctGroup);
+            agentSelect.appendChild(tGroup);
+        }
+        function populateRaritySelect() {
+            raritySelect.innerHTML = '';
+            rarities.forEach(r => {
+                const option = document.createElement('option');
+                option.value = r.id;
+                option.textContent = r.name;
+                option.style.color = r.color;
+                raritySelect.appendChild(option);
+            });
+        }
+        populateSelect(weaponSelect, weapons, 'id', 'name');
+        populateSelect(qualitySelect, qualities, 'id', 'name');
+        populateRaritySelect();
+        populateSelect(glovesSelect, gloves, 'id', 'name');
+        populateAgentSelect();
+
+        function setActiveButton(activeBtn) {
+            [btnSkin, btnAgent, btnGloves, btnSticker, btnCase].forEach(btn => {
+                btn.classList.remove('primary');
+            });
+            activeBtn.classList.add('primary');
+        }
+        function hideAllForms() {
+            skinForm.classList.add('hidden');
+            agentForm.classList.add('hidden');
+            glovesForm.classList.add('hidden');
+            stickerPlaceholder.classList.add('hidden');
+            casePlaceholder.classList.add('hidden');
+        }
+
+        btnSkin.addEventListener('click', () => {
+            hideAllForms();
+            skinForm.classList.remove('hidden');
+            setActiveButton(btnSkin);
+        });
+        btnAgent.addEventListener('click', () => {
+            hideAllForms();
+            agentForm.classList.remove('hidden');
+            setActiveButton(btnAgent);
+        });
+        btnGloves.addEventListener('click', () => {
+            hideAllForms();
+            glovesForm.classList.remove('hidden');
+            setActiveButton(btnGloves);
+        });
+        btnSticker.addEventListener('click', () => {
+            hideAllForms();
+            stickerPlaceholder.classList.remove('hidden');
+            setActiveButton(btnSticker);
+        });
+        btnCase.addEventListener('click', () => {
+            hideAllForms();
+            casePlaceholder.classList.remove('hidden');
+            setActiveButton(btnCase);
+        });
+        btnExit.addEventListener('click', () => {
+            items = [];
+            renderItems();
+            hideAllForms();
+            finishInput.value = 0;
+            patternInput.value = 0;
+            floatInput.value = 0.0;
+            glovesFinish.value = 0;
+            glovesPattern.value = 0;
+            glovesFloat.value = 0.0;
+            skinForm.classList.remove('hidden');
+            setActiveButton(btnSkin);
+            if (weaponSelect.options.length) weaponSelect.selectedIndex = 0;
+            if (qualitySelect.options.length) qualitySelect.selectedIndex = 0;
+            if (raritySelect.options.length) raritySelect.selectedIndex = 0;
+            if (glovesSelect.options.length) glovesSelect.selectedIndex = 0;
+            if (agentSelect.options.length) agentSelect.selectedIndex = 0;
+        });
+
+        addSkinBtn.addEventListener('click', () => {
+            const defIndex = parseInt(weaponSelect.value, 10);
+            const quality = parseInt(qualitySelect.value, 10);
+            const rarity = parseInt(raritySelect.value, 10);
+            const finish = parseFloat(finishInput.value);
+            const pattern = parseFloat(patternInput.value);
+            const floatVal = parseFloat(floatInput.value);
+            const displayName = weaponSelect.selectedOptions[0].textContent;
+            if (isNaN(defIndex) || isNaN(quality) || isNaN(rarity) || isNaN(finish) || isNaN(pattern) || isNaN(floatVal)) {
+                alert('Пожалуйста, заполните все поля корректными числами.');
+                return;
+            }
+            items.push({ type: 'skin', defIndex, quality, rarity, finish, pattern, float: floatVal, displayName });
+            renderItems();
+        });
+        addAgentBtn.addEventListener('click', () => {
+            const defIndex = parseInt(agentSelect.value, 10);
+            const agent = agents.find(a => a.id === defIndex);
+            if (!agent) return;
+            items.push({ type: 'agent', defIndex, quality: 5, rarity: 1, displayName: agent.name });
+            renderItems();
+        });
+        addGlovesBtn.addEventListener('click', () => {
+            const defIndex = parseInt(glovesSelect.value, 10);
+            const glovesItem = gloves.find(g => g.id === defIndex);
+            if (!glovesItem) return;
+            const finish = parseFloat(glovesFinish.value);
+            const pattern = parseFloat(glovesPattern.value);
+            const floatVal = parseFloat(glovesFloat.value);
+            if (isNaN(finish) || isNaN(pattern) || isNaN(floatVal)) {
+                alert('Пожалуйста, заполните все поля корректными числами.');
+                return;
+            }
+            items.push({ type: 'gloves', defIndex, quality: 5, rarity: 1, finish, pattern, float: floatVal, displayName: glovesItem.name });
+            renderItems();
+        });
+
+        function deleteItem(index) {
+            items.splice(index, 1);
+            renderItems();
+        }
+        function renderItems() {
+            if (items.length === 0) {
+                itemsContainer.innerHTML = '<div class="placeholder">Пока ничего нет</div>';
+                exportBtn.disabled = true;
+                return;
+            }
+            exportBtn.disabled = false;
+            let html = '';
+            items.forEach((item, idx) => {
+                html += `<div class="item-card"><span class="item-title">${item.displayName}</span><button class="delete-btn" data-index="${idx}" title="Удалить">✕</button></div>`;
+            });
+            itemsContainer.innerHTML = html;
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.currentTarget.dataset.index;
+                    deleteItem(parseInt(index, 10));
+                });
+            });
+        }
+
+        exportBtn.addEventListener('click', () => {
+            if (items.length === 0) return;
+            const lastId = parseInt(lastIdInput.value, 10) || 0;
+            let content = '"items"\n{\n';
+            items.forEach((item, idx) => {
+                const order = lastId + idx + 1;
+                const inventory = idx + 1;
+                content += `\t"${order}"\n`;
+                content += `\t{\n`;
+                content += `\t\t"inventory"\t\t"${inventory}"\n`;
+                content += `\t\t"def_index"\t\t"${item.defIndex}"\n`;
+                content += `\t\t"level"\t\t"1"\n`;
+                content += `\t\t"quality"\t\t"${item.quality}"\n`;
+                content += `\t\t"flags"\t\t"0"\n`;
+                content += `\t\t"origin"\t\t"8"\n`;
+                content += `\t\t"in_use"\t\t"0"\n`;
+                content += `\t\t"rarity"\t\t"${item.rarity}"\n`;
+                if (item.type === 'skin' || item.type === 'gloves') {
+                    content += `\t\t"attributes"\n`;
+                    content += `\t\t{\n`;
+                    content += `\t\t\t"6"\t\t"${item.finish.toFixed(6)}"\n`;
+                    content += `\t\t\t"7"\t\t"${item.pattern.toFixed(6)}"\n`;
+                    content += `\t\t\t"8"\t\t"${item.float.toFixed(6)}"\n`;
+                    content += `\t\t}\n`;
+                }
+                content += `\t\t"equipped_state"\n`;
+                content += `\t\t{\n`;
+                content += `\t\t}\n`;
+                content += `\t}\n`;
+                if (idx < items.length - 1) content += `\n`;
+            });
+            content += '}\n';
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'inventory.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        hideAllForms();
+        skinForm.classList.remove('hidden');
+        setActiveButton(btnSkin);
+    })();
+</script>
+</body>
+</html>
