@@ -21,7 +21,7 @@ CS:GO Inventory Configurator — это локальный веб-инструм
 
 🚀 Как пользоваться
 
-    Скачай файл index.html 
+    Скачай последнюю версию https://github.com/Tes-id/webui_csgo_gc/releases
     Открой через браузер
     И внутри прочитай
 
