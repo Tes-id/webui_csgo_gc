@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Конфигуратор предметов CS:GO</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #1e1e2f;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .app {
+            width: 1400px;
+            max-width: 100%;
+            background: #2d2d44;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            color: #e0e0e0;
+        }
+        .main-panel {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .left {
+            flex: 2;
+            min-width: 300px;
+        }
+        .right {
+            flex: 1;
+            min-width: 250px;
+            background: #252535;
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        h2, h3 {
+            margin-top: 0;
+            color: #b0b0d0;
+            font-weight: 400;
+            border-bottom: 1px solid #3f3f5a;
+            padding-bottom: 8px;
+        }
+        .info-panel {
+            background: #1f1f2e;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid #6a5acd;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #c0c0dd;
+        }
+        .info-panel h4 {
+            margin: 0 0 8px 0;
+            color: #b0b0ff;
+            font-weight: 400;
+        }
+        .info-panel p {
+            margin: 6px 0;
+        }
+        .info-panel .bug {
+            color: #ffa07a;
+        }
+        .info-panel .credits {
+            margin-top: 10px;
+            font-style: italic;
+            color: #8a8ab0;
+        }
+        .menu-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        button {
+            background: #3a3a55;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border: 1px solid #5a5a7a;
+        }
+        button:hover {
+            background: #4f4f70;
+            transform: translateY(-2px);
+        }
+        button.primary {
+            background: #6a5acd;
+            border-color: #8a7ae0;
+        }
+        button.primary:hover {
+            background: #7e6ee0;
+        }
+        button.danger {
+            background: #8b3a3a;
+            border-color: #b35e5e;
+        }
+        button.danger:hover {
+            background: #a54c4c;
+        }
+        button:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .form-card {
+            background: #252535;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .field {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #aaaac0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        select, input {
+            width: 100%;
+            background: #1a1a28;
+            border: 1px solid #404060;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 30px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        select:focus, input:focus {
+            border-color: #8a7ae0;
+        }
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+        .row .field {
+            flex: 1;
+        }
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .item-card {
+            background: #2f2f45;
+            border-radius: 30px;
+            padding: 8px 16px 8px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #4a4a6a;
+        }
+        .item-title {
+            font-weight: 500;
+            font-size: 15px;
+            word-break: break-word;
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff8a8a;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 6px;
+            line-height: 1;
+            box-shadow: none;
+            transform: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .delete-btn:hover {
+            background: #4a2a2a;
+            color: #ff5e5e;
+            transform: scale(1.1);
+        }
+        .export-btn {
+            width: 100%;
+            margin-top: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .placeholder {
+            color: #6a6a8a;
+            text-align: center;
+            padding: 32px 16px;
+            font-style: italic;
+        }
+        optgroup {
+            color: #c0c0e0;
+            background: #2a2a3a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <h1>⚙️ Конфигуратор предметов CS:GO</h1>
+    <div class="info-panel">
+        <h4>🧪 ВебUI инвентаря для csgo gc</h4>
+        <p><strong>Как пользоваться:</strong><br>
+        - В папке csgo_gc, в текстовике inventory смотришь номер последнего предмета в items<br>
+        - и вписываешь его в поле справа<br>
+        - Выбираешь что тебе нужно<br>
+        - Ищешь нужный тебе скин на сайте со скинами, к примеру <a href="https://csgoskins.gg/" target="_blank" style="color:#aaccff;">https://csgoskins.gg/</a><br>
+        - Берёшь со скина "Finish catalog", остальное настраиваешь как тебе угодно<br>
+        - Экспортируешь файл и закидываешь в папку csgo_gc</p>
+        <p class="bug"><strong>Известные баги:</strong><br>
+        - не заменяются иконки старых предметов (исправлено через костыль)<br>
+        - неправильная редкость у некоторых типов предметов (похуй мне, веришь?)<br>
+        - возможны несостыковки, если таковые есть пишите https://steamcommunity.com/sharedfiles/filedetails/?id=3680750141</p>
+        <p class="credits">credits: навайбкодил Tesid</p>
+    </div>
+    <div class="main-panel">
+        <div class="left">
+            <div class="menu-buttons">
+                <button id="btnSkin">🔫 Добавить скин</button>
+                <button id="btnAgent">🕵️ Добавить агента</button>
+                <button id="btnGloves">🧤 Добавить перчатки</button>
+                <button id="btnCase">📦 Добавить кейс</button>
+                <button id="btnCollectible">🏅 Добавить коллектабл</button>
+                <button id="btnSticker">🔖 Добавить наклейку</button>
+                <button id="btnExit" class="danger">⏻ Выход</button>
+            </div>
+            <div id="skinForm" class="form-card">
+                <h3>Новый скин</h3>
+                <div class="field">
+                    <label>1. Оружие</label>
+                    <select id="weaponSelect"></select>
+                </div>
+                <div class="field">
+                    <label>2. Качество</label>
+                    <select id="qualitySelect"></select>
+                </div>
+                <div class="field">
+                    <label>3. Редкость</label>
+                    <select id="raritySelect"></select>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>4. Finish catalog (ID)</label>
+                        <input type="number" id="finishInput" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Паттерн</label>
+                        <input type="number" id="patternInput" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Флоат</label>
+                        <input type="number" id="floatInput" step="any" value="0.0">
+                    </div>
+                </div>
+                <button id="addSkinBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить скин</button>
+            </div>
+            <div id="agentForm" class="form-card hidden">
+                <h3>Новый агент</h3>
+                <div class="field">
+                    <label>ID агента</label>
+                    <select id="agentSelect"></select>
+                </div>
+                <button id="addAgentBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить агента</button>
+            </div>
+            <div id="glovesForm" class="form-card hidden">
+                <h3>Новые перчатки</h3>
+                <div class="field">
+                    <label>Тип перчаток</label>
+                    <select id="glovesSelect"></select>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Finish catalog (ID)</label>
+                        <input type="number" id="glovesFinish" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Паттерн</label>
+                        <input type="number" id="glovesPattern" step="any" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Флоат</label>
+                        <input type="number" id="glovesFloat" step="any" value="0.0">
+                    </div>
+                </div>
+                <button id="addGlovesBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить перчатки</button>
+            </div>
+            <div id="caseForm" class="form-card hidden">
+                <h3>Новый кейс</h3>
+                <div class="field">
+                    <label>Кейс</label>
+                    <select id="caseSelect"></select>
+                </div>
+                <button id="addCaseBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить кейс</button>
+            </div>
+            <div id="collectibleForm" class="form-card hidden">
+                <h3>Новый коллектабл</h3>
+                <div class="field">
+                    <label>Коллектабл</label>
+                    <select id="collectibleSelect"></select>
+                </div>
+                <button id="addCollectibleBtn" class="primary" style="width:100%; margin-top:12px;">➕ Добавить коллектабл</button>
+            </div>
+            <div id="stickerPlaceholder" class="form-card hidden placeholder">
+                🔖 Раздел «Наклейки» в разработке
+            </div>
+        </div>
+        <div class="right">
+            <h3>📦 Добавленные предметы</h3>
+            <div id="itemsContainer" class="item-list">
+                <div class="placeholder">Пока ничего нет</div>
+            </div>
+            <div class="field">
+                <label>Last item ID</label>
+                <input type="number" id="lastIdInput" min="0" value="20" step="1">
+            </div>
+            <button id="exportBtn" class="export-btn primary" disabled>📥 Экспорт в inventory.txt</button>
+        </div>
+    </div>
+</div>
+<script>
+    (function() {
+        const weapons = [
+            { id: 1, name: "weapon_deagle" }, { id: 2, name: "weapon_elite" }, { id: 3, name: "weapon_fiveseven" }, { id: 4, name: "weapon_glock" }, { id: 7, name: "weapon_ak47" }, { id: 8, name: "weapon_aug" }, { id: 9, name: "weapon_awp" }, { id: 10, name: "weapon_famas" }, { id: 11, name: "weapon_g3sg1" }, { id: 13, name: "weapon_galilar" }, { id: 14, name: "weapon_m249" }, { id: 16, name: "weapon_m4a1" }, { id: 17, name: "weapon_mac10" }, { id: 19, name: "weapon_p90" }, { id: 20, name: "weapon_zone_repulsor" }, { id: 23, name: "weapon_mp5sd" }, { id: 24, name: "weapon_ump45" }, { id: 25, name: "weapon_xm1014" }, { id: 26, name: "weapon_bizon" }, { id: 27, name: "weapon_mag7" }, { id: 28, name: "weapon_negev" }, { id: 29, name: "weapon_sawedoff" }, { id: 30, name: "weapon_tec9" }, { id: 31, name: "weapon_taser" }, { id: 32, name: "weapon_hkp2000" }, { id: 33, name: "weapon_mp7" }, { id: 34, name: "weapon_mp9" }, { id: 35, name: "weapon_nova" }, { id: 36, name: "weapon_p250" }, { id: 37, name: "weapon_shield" }, { id: 38, name: "weapon_scar20" }, { id: 39, name: "weapon_sg556" }, { id: 40, name: "weapon_ssg08" }, { id: 41, name: "weapon_knifegg" }, { id: 42, name: "weapon_knife" }, { id: 43, name: "weapon_flashbang" }, { id: 44, name: "weapon_hegrenade" }, { id: 45, name: "weapon_smokegrenade" }, { id: 46, name: "weapon_molotov" }, { id: 47, name: "weapon_decoy" }, { id: 48, name: "weapon_incgrenade" }, { id: 49, name: "weapon_c4" }, { id: 50, name: "item_kevlar" }, { id: 51, name: "item_assaultsuit" }, { id: 52, name: "item_heavyassaultsuit" }, { id: 54, name: "item_nvg" }, { id: 55, name: "item_defuser" }, { id: 56, name: "item_cutters" }, { id: 57, name: "weapon_healthshot" }, { id: 58, name: "musickit_default" }, { id: 59, name: "weapon_knife_t" }, { id: 60, name: "weapon_m4a1_silencer" }, { id: 61, name: "weapon_usp_silencer" }, { id: 62, name: "Recipe Trade Up" }, { id: 63, name: "weapon_cz75a" }, { id: 64, name: "weapon_revolver" }, { id: 68, name: "weapon_tagrenade" }, { id: 69, name: "weapon_fists" }, { id: 70, name: "weapon_breachcharge" }, { id: 72, name: "weapon_tablet" }, { id: 74, name: "weapon_melee" }, { id: 75, name: "weapon_axe" }, { id: 76, name: "weapon_hammer" }, { id: 78, name: "weapon_spanner" }, { id: 80, name: "weapon_knife_ghost" }, { id: 81, name: "weapon_firebomb" }, { id: 82, name: "weapon_diversion" }, { id: 83, name: "weapon_frag_grenade" }, { id: 84, name: "weapon_snowball" }, { id: 85, name: "weapon_bumpmine" }, { id: 500, name: "weapon_bayonet" }, { id: 503, name: "weapon_knife_css" }, { id: 505, name: "weapon_knife_flip" }, { id: 506, name: "weapon_knife_gut" }, { id: 507, name: "weapon_knife_karambit" }, { id: 508, name: "weapon_knife_m9_bayonet" }, { id: 509, name: "weapon_knife_tactical" }, { id: 512, name: "weapon_knife_falchion" }, { id: 514, name: "weapon_knife_survival_bowie" }, { id: 515, name: "weapon_knife_butterfly" }, { id: 516, name: "weapon_knife_push" }, { id: 517, name: "weapon_knife_cord" }, { id: 518, name: "weapon_knife_canis" }, { id: 519, name: "weapon_knife_ursus" }, { id: 520, name: "weapon_knife_gypsy_jackknife" }, { id: 521, name: "weapon_knife_outdoor" }, { id: 522, name: "weapon_knife_stiletto" }, { id: 523, name: "weapon_knife_widowmaker" }, { id: 525, name: "weapon_knife_skeleton" }
+        ];
+        const qualities = [
+            { id: 0, name: "None (обычное)" },
+            { id: 1, name: "Genuine (высшей пробы)" },
+            { id: 2, name: "Vintage (старой закалки)" },
+            { id: 3, name: "★" }
+        ];
+        const rarities = [
+            { id: 0, name: "Default", color: "#ffffff" },
+            { id: 1, name: "Consumer Grade", color: "#b0b0b0" },
+            { id: 2, name: "Industrial Grade", color: "#5a9eff" },
+            { id: 3, name: "Mil-Spec Grade", color: "#4b6e9c" },
+            { id: 4, name: "Restricted", color: "#9b6bb0" },
+            { id: 5, name: "Classified", color: "#d64f9b" },
+            { id: 6, name: "Convert", color: "#ff5555" },
+            { id: 7, name: "Controbanned", color: "#ffd966" }
+        ];
+        const agents = [
+            { id: 4771, name: "Cmdr. Frank “Wet Sox” Baroud | SEAL Frogman", group: "CT" },
+            { id: 4711, name: "Cmdr. Mae “Dead Cold” Jamison | SWAT", group: "CT" },
+            { id: 5308, name: "Special Agent Ava | FBI", group: "CT" },
+            { id: 4750, name: "Chem-Haz Capitaine | Gendarmerie Nationale", group: "CT" },
+            { id: 4772, name: "Lieutenant Rex Krikey | SEAL Frogman", group: "CT" },
+            { id: 4712, name: "1st Lieutenant Farlow | SWAT", group: "CT" },
+            { id: 5403, name: "“Two Times” McCoy | TACP Cavalry", group: "CT" },
+            { id: 4619, name: "“Blueberries” Buckshot | NSWC SEAL", group: "CT" },
+            { id: 4753, name: "Officer Jacques Beltram | Gendarmerie Nationale", group: "CT" },
+            { id: 4715, name: "Sergeant Bombson | SWAT", group: "CT" },
+            { id: 5306, name: "Markus Delrow | FBI HRT", group: "CT" },
+            { id: 5602, name: "D Squadron Officer | NZSAS", group: "CT" },
+            { id: 5401, name: "Seal Team 6 Soldier | NSWC SEAL", group: "CT" },
+            { id: 5305, name: "Operator | FBI SWAT", group: "CT" },
+            { id: 4726, name: "Sir Bloody Miami Darryl | The Professionals", group: "T" },
+            { id: 4733, name: "Sir Bloody Silent Darryl | The Professionals", group: "T" },
+            { id: 5108, name: "The Elite Mr. Muhlik | Elite Crew", group: "T" },
+            { id: 4777, name: "Vypa Sista of the Revolution | Guerrilla Warfare", group: "T" },
+            { id: 4732, name: "Number K | The Professionals", group: "T" },
+            { id: 4727, name: "Safecracker Voltzmann | The Professionals", group: "T" },
+            { id: 5503, name: "Blackwolf | Sabre", group: "T" },
+            { id: 4730, name: "Getaway Sally | The Professionals", group: "T" },
+            { id: 5500, name: "Dragomir | Sabre", group: "T" },
+            { id: 4781, name: "Trapper | Guerrilla Warfare", group: "T" },
+            { id: 4778, name: "Trapper Aggressor | Guerrilla Warfare", group: "T" },
+            { id: 5109, name: "Jungle Rebel | Elite Crew", group: "T" },
+            { id: 5208, name: "Street Soldier | Phoenix", group: "T" }
+        ];
+        const gloves = [
+            { id: 5027, name: "Bloodhound" },
+            { id: 4725, name: "Broken Fang" },
+            { id: 5031, name: "Driver Gloves" },
+            { id: 5032, name: "Hand Wraps" },
+            { id: 5035, name: "Hydra Gloves" },
+            { id: 5033, name: "Moto Gloves" },
+            { id: 5034, name: "Specialist Gloves" },
+            { id: 5030, name: "Sport Gloves" }
+        ];
+        const cases = [
+            { id: 4001, name: "armsdeal1 (CSGO_crate_valve_1)" }, { id: 4002, name: "esports_2013 (CSGO_crate_esports_2013)" }, { id: 4004, name: "armsdeal2 (CSGO_crate_valve_2)" }, { id: 4003, name: "bravo (CSGO_crate_operation_ii)" }, { id: 4005, name: "esports_2013_winter (CSGO_crate_esports_2013_winter)" }, { id: 4006, name: "hw13_promo (CSGO_crate_dhw13_promo)" }, { id: 4009, name: "winteroffensive (CSGO_crate_community_1)" }, { id: 4010, name: "armsdeal3 (CSGO_crate_valve_3)" }, { id: 4011, name: "phoneix (CSGO_crate_community_2)" }, { id: 4013, name: "ems14_promo (CSGO_crate_ems14_promo)" }, { id: 4017, name: "huntsman (CSGO_crate_community_3)" }, { id: 4018, name: "breakout (CSGO_crate_community_4)" }, { id: 4019, name: "esports_2014_summer (CSGO_crate_esports_2014_summer)" }, { id: 4022, name: "esl14_promo_de_dust2 (CSGO_crate_esl14_promo_de_dust2)" }, { id: 4023, name: "esl14_promo_de_inferno (CSGO_crate_esl14_promo_de_inferno)" }, { id: 4024, name: "esl14_promo_de_mirage (CSGO_crate_esl14_promo_de_mirage)" }, { id: 4025, name: "esl14_promo_de_nuke (CSGO_crate_esl14_promo_de_nuke)" }, { id: 4026, name: "esl14_promo_de_cache (CSGO_crate_esl14_promo_de_cache)" }, { id: 4027, name: "esl14_promo_de_cbble (CSGO_crate_esl14_promo_de_cbble)" }, { id: 4028, name: "esl14_promo_de_overpass (CSGO_crate_esl14_promo_de_overpass)" }, { id: 4029, name: "operation_vanguard (CSGO_crate_operation_vanguard)" }, { id: 4031, name: "dhw14_promo_de_dust2 (CSGO_crate_dhw14_promo_de_dust2)" }, { id: 4032, name: "dhw14_promo_de_inferno (CSGO_crate_dhw14_promo_de_inferno)" }, { id: 4033, name: "dhw14_promo_de_mirage (CSGO_crate_dhw14_promo_de_mirage)" }, { id: 4034, name: "dhw14_promo_de_nuke (CSGO_crate_dhw14_promo_de_nuke)" }, { id: 4035, name: "dhw14_promo_de_cache (CSGO_crate_dhw14_promo_de_cache)" }, { id: 4036, name: "dhw14_promo_de_cbble (CSGO_crate_dhw14_promo_de_cbble)" }, { id: 4037, name: "dhw14_promo_de_overpass (CSGO_crate_dhw14_promo_de_overpass)" }, { id: 4061, name: "chroma (CSGO_crate_community_6)" }, { id: 4079, name: "eslkatowice2015_promo_de_dust2 (CSGO_crate_eslkatowice2015_promo_de_dust2)" }, { id: 4080, name: "eslkatowice2015_promo_de_inferno (CSGO_crate_eslkatowice2015_promo_de_inferno)" }, { id: 4081, name: "eslkatowice2015_promo_de_mirage (CSGO_crate_eslkatowice2015_promo_de_mirage)" }, { id: 4082, name: "eslkatowice2015_promo_de_nuke (CSGO_crate_eslkatowice2015_promo_de_nuke)" }, { id: 4083, name: "eslkatowice2015_promo_de_cache (CSGO_crate_eslkatowice2015_promo_de_cache)" }, { id: 4084, name: "eslkatowice2015_promo_de_cbble (CSGO_crate_eslkatowice2015_promo_de_cbble)" }, { id: 4085, name: "eslkatowice2015_promo_de_overpass (CSGO_crate_eslkatowice2015_promo_de_overpass)" }, { id: 4089, name: "chroma2 (CSGO_crate_community_7)" }, { id: 4091, name: "bloodhound (CSGO_crate_community_8)" }, { id: 4131, name: "eslcologne2015_promo_de_dust2 (CSGO_crate_eslcologne2015_promo_de_dust2)" }, { id: 4132, name: "eslcologne2015_promo_de_mirage (CSGO_crate_eslcologne2015_promo_de_mirage)" }, { id: 4133, name: "eslcologne2015_promo_de_inferno (CSGO_crate_eslcologne2015_promo_de_inferno)" }, { id: 4134, name: "eslcologne2015_promo_de_cbble (CSGO_crate_eslcologne2015_promo_de_cbble)" }, { id: 4135, name: "eslcologne2015_promo_de_overpass (CSGO_crate_eslcologne2015_promo_de_overpass)" }, { id: 4136, name: "eslcologne2015_promo_de_cache (CSGO_crate_eslcologne2015_promo_de_cache)" }, { id: 4137, name: "eslcologne2015_promo_de_train (CSGO_crate_eslcologne2015_promo_de_train)" }, { id: 4138, name: "shadow (CSGO_crate_community_9)" }, { id: 4176, name: "cluj2015_promo_de_dust2 (CSGO_crate_cluj2015_promo_de_dust2)" }, { id: 4177, name: "cluj2015_promo_de_mirage (CSGO_crate_cluj2015_promo_de_mirage)" }, { id: 4178, name: "cluj2015_promo_de_inferno (CSGO_crate_cluj2015_promo_de_inferno)" }, { id: 4179, name: "cluj2015_promo_de_cbble (CSGO_crate_cluj2015_promo_de_cbble)" }, { id: 4180, name: "cluj2015_promo_de_overpass (CSGO_crate_cluj2015_promo_de_overpass)" }, { id: 4181, name: "cluj2015_promo_de_cache (CSGO_crate_cluj2015_promo_de_cache)" }, { id: 4182, name: "cluj2015_promo_de_train (CSGO_crate_cluj2015_promo_de_train)" }, { id: 4186, name: "revolver (CSGO_crate_community_10)" }, { id: 4187, name: "wildfire (CSGO_crate_community_11)" }, { id: 4225, name: "columbus2016_promo_de_dust2 (CSGO_crate_columbus2016_promo_de_dust2)" }, { id: 4226, name: "columbus2016_promo_de_mirage (CSGO_crate_columbus2016_promo_de_mirage)" }, { id: 4227, name: "columbus2016_promo_de_inferno (CSGO_crate_columbus2016_promo_de_inferno)" }, { id: 4228, name: "columbus2016_promo_de_cbble (CSGO_crate_columbus2016_promo_de_cbble)" }, { id: 4229, name: "columbus2016_promo_de_overpass (CSGO_crate_columbus2016_promo_de_overpass)" }, { id: 4230, name: "columbus2016_promo_de_cache (CSGO_crate_columbus2016_promo_de_cache)" }, { id: 4231, name: "columbus2016_promo_de_train (CSGO_crate_columbus2016_promo_de_train)" }, { id: 4232, name: "columbus2016_promo_de_nuke (CSGO_crate_columbus2016_promo_de_nuke)" }, { id: 4274, name: "cologne2016_promo_de_dust2 (CSGO_crate_cologne2016_promo_de_dust2)" }, { id: 4275, name: "cologne2016_promo_de_mirage (CSGO_crate_cologne2016_promo_de_mirage)" }, { id: 4276, name: "cologne2016_promo_de_cbble (CSGO_crate_cologne2016_promo_de_cbble)" }, { id: 4277, name: "cologne2016_promo_de_overpass (CSGO_crate_cologne2016_promo_de_overpass)" }, { id: 4278, name: "cologne2016_promo_de_cache (CSGO_crate_cologne2016_promo_de_cache)" }, { id: 4279, name: "cologne2016_promo_de_train (CSGO_crate_cologne2016_promo_de_train)" }, { id: 4280, name: "cologne2016_promo_de_nuke (CSGO_crate_cologne2016_promo_de_nuke)" }, { id: 4344, name: "atlanta2017_promo_de_dust2 (CSGO_crate_atlanta2017_promo_de_dust2)" }, { id: 4345, name: "atlanta2017_promo_de_mirage (CSGO_crate_atlanta2017_promo_de_mirage)" }, { id: 4346, name: "atlanta2017_promo_de_cbble (CSGO_crate_atlanta2017_promo_de_cbble)" }, { id: 4347, name: "atlanta2017_promo_de_overpass (CSGO_crate_atlanta2017_promo_de_overpass)" }, { id: 4348, name: "atlanta2017_promo_de_cache (CSGO_crate_atlanta2017_promo_de_cache)" }, { id: 4349, name: "atlanta2017_promo_de_train (CSGO_crate_atlanta2017_promo_de_train)" }, { id: 4350, name: "atlanta2017_promo_de_nuke (CSGO_crate_atlanta2017_promo_de_nuke)" }, { id: 4396, name: "krakow2017_promo_de_inferno (CSGO_crate_krakow2017_promo_de_inferno)" }, { id: 4397, name: "krakow2017_promo_de_mirage (CSGO_crate_krakow2017_promo_de_mirage)" }, { id: 4398, name: "krakow2017_promo_de_cbble (CSGO_crate_krakow2017_promo_de_cbble)" }, { id: 4399, name: "krakow2017_promo_de_overpass (CSGO_crate_krakow2017_promo_de_overpass)" }, { id: 4400, name: "krakow2017_promo_de_cache (CSGO_crate_krakow2017_promo_de_cache)" }, { id: 4401, name: "krakow2017_promo_de_train (CSGO_crate_krakow2017_promo_de_train)" }, { id: 4402, name: "krakow2017_promo_de_nuke (CSGO_crate_krakow2017_promo_de_nuke)" }, { id: 4463, name: "boston2018_promo_de_inferno (CSGO_crate_boston2018_promo_de_inferno)" }, { id: 4464, name: "boston2018_promo_de_mirage (CSGO_crate_boston2018_promo_de_mirage)" }, { id: 4465, name: "boston2018_promo_de_cbble (CSGO_crate_boston2018_promo_de_cbble)" }, { id: 4466, name: "boston2018_promo_de_overpass (CSGO_crate_boston2018_promo_de_overpass)" }, { id: 4467, name: "boston2018_promo_de_cache (CSGO_crate_boston2018_promo_de_cache)" }, { id: 4468, name: "boston2018_promo_de_train (CSGO_crate_boston2018_promo_de_train)" }, { id: 4469, name: "boston2018_promo_de_nuke (CSGO_crate_boston2018_promo_de_nuke)" }, { id: 4540, name: "london2018_promo_de_inferno (CSGO_crate_london2018_promo_de_inferno)" }, { id: 4541, name: "london2018_promo_de_mirage (CSGO_crate_london2018_promo_de_mirage)" }, { id: 4542, name: "london2018_promo_de_dust2 (CSGO_crate_london2018_promo_de_dust2)" }, { id: 4543, name: "london2018_promo_de_overpass (CSGO_crate_london2018_promo_de_overpass)" }, { id: 4544, name: "london2018_promo_de_cache (CSGO_crate_london2018_promo_de_cache)" }, { id: 4545, name: "london2018_promo_de_train (CSGO_crate_london2018_promo_de_train)" }, { id: 4546, name: "london2018_promo_de_nuke (CSGO_crate_london2018_promo_de_nuke)" }, { id: 4590, name: "katowice2019_promo_de_inferno (CSGO_crate_katowice2019_promo_de_inferno)" }, { id: 4591, name: "katowice2019_promo_de_mirage (CSGO_crate_katowice2019_promo_de_mirage)" }, { id: 4592, name: "katowice2019_promo_de_dust2 (CSGO_crate_katowice2019_promo_de_dust2)" }, { id: 4593, name: "katowice2019_promo_de_overpass (CSGO_crate_katowice2019_promo_de_overpass)" }, { id: 4594, name: "katowice2019_promo_de_cache (CSGO_crate_katowice2019_promo_de_cache)" }, { id: 4595, name: "katowice2019_promo_de_train (CSGO_crate_katowice2019_promo_de_train)" }, { id: 4596, name: "katowice2019_promo_de_nuke (CSGO_crate_katowice2019_promo_de_nuke)" }, { id: 4660, name: "berlin2019_promo_de_inferno (CSGO_crate_berlin2019_promo_de_inferno)" }, { id: 4661, name: "berlin2019_promo_de_mirage (CSGO_crate_berlin2019_promo_de_mirage)" }, { id: 4662, name: "berlin2019_promo_de_dust2 (CSGO_crate_berlin2019_promo_de_dust2)" }, { id: 4663, name: "berlin2019_promo_de_overpass (CSGO_crate_berlin2019_promo_de_overpass)" }, { id: 4664, name: "berlin2019_promo_de_train (CSGO_crate_berlin2019_promo_de_train)" }, { id: 4665, name: "berlin2019_promo_de_nuke (CSGO_crate_berlin2019_promo_de_nuke)" }, { id: 4666, name: "berlin2019_promo_de_vertigo (CSGO_crate_berlin2019_promo_de_vertigo)" }, { id: 4233, name: "chroma3 (CSGO_crate_community_12)" }, { id: 4236, name: "gamma (CSGO_crate_community_13)" }, { id: 4281, name: "gamma2 (CSGO_crate_gamma_2)" }, { id: 4288, name: "glove (CSGO_crate_community_15)" }, { id: 4351, name: "spectrum (CSGO_crate_community_16)" }, { id: 4351, name: "hydra (CSGO_crate_community_17)" }, { id: 4403, name: "spectrum2 (CSGO_crate_community_18)" }, { id: 4471, name: "clutch (CSGO_crate_community_19)" }, { id: 4482, name: "horizon (CSGO_crate_community_20)" }, { id: 4548, name: "dangerzone (CSGO_crate_community_21)" }, { id: 4598, name: "community_22 (CSGO_crate_community_22)" }, { id: 4620, name: "community_23 (CSGO_crate_community_23)" }, { id: 4669, name: "community_24 (CSGO_crate_community_24)" }, { id: 4695, name: "community_25 (CSGO_crate_community_25)" }, { id: 4698, name: "community_26 (CSGO_crate_community_26)" }, { id: 4717, name: "community_27 (CSGO_crate_community_27)" }, { id: 4747, name: "community_28 (CSGO_crate_community_28)" }, { id: 4790, name: "community_29 (CSGO_crate_community_29)" }, { id: 4809, name: "stockh2021_promo_de_inferno (CSGO_crate_stockh2021_promo_de_inferno)" }, { id: 4810, name: "stockh2021_promo_de_mirage (CSGO_crate_stockh2021_promo_de_mirage)" }, { id: 4811, name: "stockh2021_promo_de_dust2 (CSGO_crate_stockh2021_promo_de_dust2)" }, { id: 4812, name: "stockh2021_promo_de_overpass (CSGO_crate_stockh2021_promo_de_overpass)" }, { id: 4813, name: "stockh2021_promo_de_ancient (CSGO_crate_stockh2021_promo_de_ancient)" }, { id: 4814, name: "stockh2021_promo_de_nuke (CSGO_crate_stockh2021_promo_de_nuke)" }, { id: 4815, name: "stockh2021_promo_de_vertigo (CSGO_crate_stockh2021_promo_de_vertigo)" }, { id: 4835, name: "antwerp2022_promo_de_inferno (CSGO_crate_antwerp2022_promo_de_inferno)" }, { id: 4836, name: "antwerp2022_promo_de_mirage (CSGO_crate_antwerp2022_promo_de_mirage)" }, { id: 4837, name: "antwerp2022_promo_de_dust2 (CSGO_crate_antwerp2022_promo_de_dust2)" }, { id: 4838, name: "antwerp2022_promo_de_overpass (CSGO_crate_antwerp2022_promo_de_overpass)" }, { id: 4839, name: "antwerp2022_promo_de_ancient (CSGO_crate_antwerp2022_promo_de_ancient)" }, { id: 4840, name: "antwerp2022_promo_de_nuke (CSGO_crate_antwerp2022_promo_de_nuke)" }, { id: 4841, name: "crate_antwerp2022_promo_de_vertigo (CSGO_crate_antwerp2022_promo_de_vertigo)" }, { id: 4860, name: "rio2022_promo_de_inferno (CSGO_crate_rio2022_promo_de_inferno)" }, { id: 4861, name: "rio2022_promo_de_mirage (CSGO_crate_rio2022_promo_de_mirage)" }, { id: 4862, name: "rio2022_promo_de_dust2 (CSGO_crate_rio2022_promo_de_dust2)" }, { id: 4863, name: "rio2022_promo_de_overpass (CSGO_crate_rio2022_promo_de_overpass)" }, { id: 4864, name: "rio2022_promo_de_ancient (CSGO_crate_rio2022_promo_de_ancient)" }, { id: 4865, name: "rio2022_promo_de_nuke (CSGO_crate_rio2022_promo_de_nuke)" }, { id: 4866, name: "rio2022_promo_de_vertigo (CSGO_crate_rio2022_promo_de_vertigo)" }, { id: 4893, name: "paris2023_promo_de_inferno (CSGO_crate_paris2023_promo_de_inferno)" }, { id: 4894, name: "paris2023_promo_de_mirage (CSGO_crate_paris2023_promo_de_mirage)" }, { id: 4895, name: "paris2023_promo_de_anubis (CSGO_crate_paris2023_promo_de_anubis)" }, { id: 4896, name: "paris2023_promo_de_overpass (CSGO_crate_paris2023_promo_de_overpass)" }, { id: 4897, name: "paris2023_promo_de_ancient (CSGO_crate_paris2023_promo_de_ancient)" }, { id: 4898, name: "paris2023_promo_de_nuke (CSGO_crate_paris2023_promo_de_nuke)" }, { id: 4899, name: "paris2023_promo_de_vertigo (CSGO_crate_paris2023_promo_de_vertigo)" }, { id: 4818, name: "community_30 (CSGO_crate_community_30)" }, { id: 4846, name: "community_31 (CSGO_crate_community_31)" }, { id: 4880, name: "community_32 (CSGO_crate_community_32)" }
+        ];
+        const collectibles = [
+            { id: 874, name: "FiveYearService (#CSGO_CollectibleCoin_FiveYearService)" }, { id: 875, name: "DH2013_Champion (#CSGO_CollectibleCoin_DH2013_Champion)" }, { id: 876, name: "DH2013_Finalist" }, { id: 877, name: "DH2013_SemiFinalist" }, { id: 878, name: "DH2013_QuarterFinalist" }, { id: 879, name: "Kat2014_Champion" }, { id: 880, name: "Kat2014_Finalist" }, { id: 881, name: "Kat2014_SemiFinalist" }, { id: 882, name: "Kat2014_QuarterFinalist" }, { id: 883, name: "Cologne2014_Champion" }, { id: 884, name: "Cologne2014_Finalist" }, { id: 885, name: "Cologne2014_SemiFinalist" }, { id: 886, name: "Cologne2014_QuarterFinalist" }, { id: 887, name: "Cologne2014_PickEmBronze" }, { id: 888, name: "Cologne2014_PickEmSilver" }, { id: 889, name: "Cologne2014_PickEmGold" }, { id: 890, name: "DHW2014_Champion" }, { id: 891, name: "DHW2014_Finalist" }, { id: 892, name: "DHW2014_SemiFinalist" }, { id: 893, name: "DHW2014_QuarterFinalist" }, { id: 894, name: "DHW2014_PickEmBronze" }, { id: 895, name: "DHW2014_PickEmSilver" }, { id: 896, name: "DHW2014_PickEmGold" }, { id: 897, name: "Kat2015_Champion" }, { id: 898, name: "Kat2015_Finalist" }, { id: 899, name: "Kat2015_SemiFinalist" }, { id: 900, name: "Kat2015_QuarterFinalist" }, { id: 901, name: "Kat2015_PickEmBronze" }, { id: 902, name: "Kat2015_PickEmSilver" }, { id: 903, name: "Kat2015_PickEmGold" }, { id: 904, name: "Cologne2015_Champion" }, { id: 905, name: "Cologne2015_Finalist" }, { id: 906, name: "Cologne2015_SemiFinalist" }, { id: 907, name: "Cologne2015_QuarterFinalist" }, { id: 908, name: "Cologne2015_PickEmBronze" }, { id: 909, name: "Cologne2015_PickEmSilver" }, { id: 910, name: "Cologne2015_PickEmGold" }, { id: 911, name: "Cluj2015_PickEmBronze" }, { id: 912, name: "Cluj2015_PickEmSilver" }, { id: 913, name: "Cluj2015_PickEmGold" }, { id: 914, name: "Cluj2015_FantasyBronze" }, { id: 915, name: "Cluj2015_FantasySilver" }, { id: 916, name: "Cluj2015_FantasyGold" }, { id: 917, name: "Cluj2015_Champion" }, { id: 918, name: "Cluj2015_Finalist" }, { id: 919, name: "Cluj2015_SemiFinalist" }, { id: 920, name: "Cluj2015_Quarterfinalist" }, { id: 921, name: "Columbus2016_PickEmBronze" }, { id: 922, name: "Columbus2016_PickEmSilver" }, { id: 923, name: "Columbus2016_PickEmGold" }, { id: 924, name: "Columbus2016_FantasyBronze" }, { id: 925, name: "Columbus2016_FantasySilver" }, { id: 926, name: "Columbus2016_FantasyGold" }, { id: 927, name: "Columbus2016_Champion" }, { id: 928, name: "Columbus2016_Finalist" }, { id: 929, name: "Columbus2016_SemiFinalist" }, { id: 930, name: "Columbus2016_Quarterfinalist" }, { id: 931, name: "Cologne2016_Champion" }, { id: 932, name: "Cologne2016_Finalist" }, { id: 933, name: "Cologne2016_SemiFinalist" }, { id: 934, name: "Cologne2016_Quarterfinalist" }, { id: 935, name: "Cologne2016_PickEmBronze" }, { id: 936, name: "Cologne2016_PickEmSilver" }, { id: 937, name: "Cologne2016_PickEmGold" }, { id: 938, name: "Cologne2016_FantasyBronze" }, { id: 939, name: "Cologne2016_FantasySilver" }, { id: 940, name: "Cologne2016_FantasyGold" }, { id: 941, name: "Atlanta2017_Champion" }, { id: 942, name: "Atlanta2017_Finalist" }, { id: 943, name: "Atlanta2017_SemiFinalist" }, { id: 944, name: "Atlanta2017_Quarterfinalist" }, { id: 945, name: "Atlanta2017_PickEmBronze" }, { id: 946, name: "Atlanta2017_PickEmSilver" }, { id: 947, name: "Atlanta2017_PickEmGold" }, { id: 948, name: "Krakow2017_Champion" }, { id: 949, name: "Krakow2017_Finalist" }, { id: 950, name: "Krakow2017_SemiFinalist" }, { id: 951, name: "Krakow2017_Quarterfinalist" }, { id: 952, name: "Krakow2017_PickEmBronze" }, { id: 953, name: "Krakow2017_PickEmSilver" }, { id: 954, name: "Krakow2017_PickEmGold" }, { id: 955, name: "Boston2018_Champion" }, { id: 956, name: "Boston2018_Finalist" }, { id: 957, name: "Boston2018_SemiFinalist" }, { id: 958, name: "Boston2018_Quarterfinalist" }, { id: 959, name: "Boston2018_PickEmBronze" }, { id: 960, name: "Boston2018_PickEmSilver" }, { id: 961, name: "Boston2018_PickEmGold" }, { id: 962, name: "London2018_Champion" }, { id: 963, name: "London2018_Finalist" }, { id: 964, name: "London2018_SemiFinalist" }, { id: 965, name: "London2018_Quarterfinalist" }, { id: 966, name: "London2018_PickEmBronze" }, { id: 967, name: "London2018_PickEmSilver" }, { id: 968, name: "London2018_PickEmGold" }, { id: 969, name: "TenYearService" }, { id: 970, name: "FortiusQuoFidelius" }, { id: 971, name: "Katowice2019_Champion" }, { id: 972, name: "Katowice2019_Finalist" }, { id: 973, name: "Katowice2019_SemiFinalist" }, { id: 974, name: "Katowice2019_Quarterfinalist" }, { id: 975, name: "Berlin2019_Champion" }, { id: 976, name: "Berlin2019_Finalist" }, { id: 977, name: "Berlin2019_SemiFinalist" }, { id: 978, name: "Berlin2019_Quarterfinalist" }, { id: 979, name: "Stockh2021_Champion" }, { id: 980, name: "Stockh2021_Finalist" }, { id: 981, name: "Stockh2021_SemiFinalist" }, { id: 982, name: "Stockh2021_Quarterfinalist" }, { id: 983, name: "Antwerp2022_Champion" }, { id: 984, name: "Antwerp2022_Finalist" }, { id: 985, name: "Antwerp2022_SemiFinalist" }, { id: 986, name: "Antwerp2022_Quarterfinalist" }, { id: 987, name: "CsgoTenYearAnniversaryMemorabilia" }, { id: 988, name: "Rio2022_Champion" }, { id: 989, name: "Rio2022_Finalist" }, { id: 990, name: "Rio2022_SemiFinalist" }, { id: 991, name: "Rio2022_Quarterfinalist" }, { id: 992, name: "Paris2023_Champion" }, { id: 993, name: "Paris2023_Finalist" }, { id: 994, name: "Paris2023_SemiFinalist" }, { id: 995, name: "Paris2023_Quarterfinalist" }, { id: 996, name: "CoinCsgo" }, { id: 1001, name: "CommunitySeasonOneSpring2013_Coin1" }, { id: 1002, name: "CommunitySeasonOneSpring2013_Coin2" }, { id: 1003, name: "CommunitySeasonOneSpring2013_Coin3" }, { id: 1004, name: "MapTokenMuseum" }, { id: 1005, name: "MapTokenDowntown" }, { id: 1006, name: "MapTokenThunder" }, { id: 1007, name: "MapTokenFavela" }, { id: 1008, name: "MapTokenMotel" }, { id: 1009, name: "MapTokenSeaside" }, { id: 1010, name: "MapTokenLibrary" }, { id: 1013, name: "CommunitySeasonTwoAutumn2013_Coin1" }, { id: 1014, name: "CommunitySeasonTwoAutumn2013_Coin2" }, { id: 1015, name: "CommunitySeasonTwoAutumn2013_Coin3" }, { id: 1016, name: "MapTokenAgency" }, { id: 1017, name: "MapTokenAli" }, { id: 1018, name: "MapTokenCache" }, { id: 1019, name: "MapTokenChinatown" }, { id: 1020, name: "MapTokenGwalior" }, { id: 1021, name: "MapTokenRuins" }, { id: 1022, name: "MapTokenSiege" }, { id: 1024, name: "CommunitySeasonThreeSpring2014_Coin1" }, { id: 1025, name: "CommunitySeasonThreeSpring2014_Coin2" }, { id: 1026, name: "CommunitySeasonThreeSpring2014_Coin3" }, { id: 1028, name: "CommunitySeasonFourSummer2014_Coin1" }, { id: 1029, name: "CommunitySeasonFourSummer2014_Coin2" }, { id: 1030, name: "CommunitySeasonFourSummer2014_Coin3" }, { id: 1031, name: "MapTokenCastle" }, { id: 1032, name: "MapTokenBlackGold" }, { id: 1033, name: "MapTokenRush" }, { id: 1034, name: "MapTokenMist" }, { id: 1035, name: "MapTokenInsertion" }, { id: 1036, name: "MapTokenOvergrown" }, { id: 1037, name: "MapTokenMarquis" }, { id: 1038, name: "MapTokenWorkout" }, { id: 1039, name: "MapTokenBackalley" }, { id: 1040, name: "MapTokenSeason" }, { id: 1041, name: "MapTokenBazaar" }, { id: 1042, name: "MapTokenFacade" }, { id: 1043, name: "MapTokenLog" }, { id: 1044, name: "MapTokenRails" }, { id: 1045, name: "MapTokenResort" }, { id: 1046, name: "MapTokenZoo" }, { id: 1047, name: "MapTokenSantorini" }, { id: 1048, name: "MapTokenCoast" }, { id: 1049, name: "MapTokenMikla" }, { id: 1050, name: "MapTokenRoyal" }, { id: 1051, name: "MapTokenEmpire" }, { id: 1052, name: "MapTokenTulip" }, { id: 1053, name: "MapTokenCruise" }, { id: 1054, name: "MapTokenSubzero" }, { id: 1055, name: "MapTokenBiome" }, { id: 1056, name: "MapTokenAbbey" }, { id: 1057, name: "MapTokenRuby" }, { id: 1058, name: "MapTokenBreach" }, { id: 1059, name: "MapTokenStudio" }, { id: 1060, name: "MapTokenJungle" }, { id: 1061, name: "MapTokenAnubis" }, { id: 1062, name: "MapTokenChlorine" }, { id: 1063, name: "MapTokenMutiny" }, { id: 1064, name: "MapTokenSwamp" }, { id: 1065, name: "MapTokenFrostbite" }, { id: 1066, name: "MapTokenEngage" }, { id: 1067, name: "MapTokenApollo" }, { id: 1068, name: "MapTokenGuard" }, { id: 1069, name: "MapTokenElysion" }, { id: 1070, name: "MapTokenGrind" }, { id: 1071, name: "MapTokenMocha" }, { id: 1072, name: "MapTokenCalavera" }, { id: 1073, name: "MapTokenPitstop" }, { id: 1074, name: "MapTokenBasalt" }, { id: 1075, name: "MapTokenInsertion2" }, { id: 1076, name: "MapTokenRavine" }, { id: 1077, name: "MapTokenExtraction" }, { id: 1078, name: "MapTokenCounty" }, { id: 1079, name: "MapTokenIris" }, { id: 1080, name: "MapTokenClimb" }, { id: 1081, name: "MapTokenCrete" }, { id: 1082, name: "MapTokenHive" }, { id: 1083, name: "MapTokenVineyard" }, { id: 1084, name: "MapTokenEmber" }, { id: 1085, name: "MapTokenTuscan" }, { id: 1086, name: "MapTokenPrime" }, { id: 1087, name: "MapTokenBlagai" }, { id: 1088, name: "MapTokenBoyard" }, { id: 1089, name: "MapTokenChalice" }, { id: 1316, name: "CommunitySeasonFiveSummer2014_Coin1" }, { id: 1317, name: "CommunitySeasonFiveSummer2014_Coin2" }, { id: 1318, name: "CommunitySeasonFiveSummer2014_Coin3" }, { id: 1327, name: "CommunitySeasonSix2015_Coin1" }, { id: 1328, name: "CommunitySeasonSix2015_Coin2" }, { id: 1329, name: "CommunitySeasonSix2015_Coin3" }, { id: 1331, name: "GlobalGeneral2015" }, { id: 1332, name: "GlobalGeneral2015" }, { id: 1336, name: "CommunitySeasonSeven2016_Coin1" }, { id: 1337, name: "CommunitySeasonSeven2016_Coin2" }, { id: 1338, name: "CommunitySeasonSeven2016_Coin3" }, { id: 1339, name: "GlobalGeneral2016" }, { id: 1340, name: "GlobalGeneral2016" }, { id: 1341, name: "GlobalGeneral2016" }, { id: 1342, name: "GlobalGeneral2016" }, { id: 1343, name: "GlobalGeneral2016" }, { id: 1344, name: "GlobalGeneral2016" }, { id: 1357, name: "GlobalGeneral2017" }, { id: 1358, name: "GlobalGeneral2017" }, { id: 1359, name: "GlobalGeneral2017" }, { id: 1360, name: "GlobalGeneral2017" }, { id: 1361, name: "GlobalGeneral2017" }, { id: 1362, name: "GlobalGeneral2017" }, { id: 1363, name: "GlobalGeneral2017" }, { id: 1367, name: "GlobalGeneral2018" }, { id: 1368, name: "GlobalGeneral2018" }, { id: 1369, name: "GlobalGeneral2018" }, { id: 1370, name: "GlobalGeneral2018" }, { id: 1371, name: "GlobalGeneral2018" }, { id: 1372, name: "GlobalGeneral2018" }, { id: 1376, name: "GlobalGeneral2019" }, { id: 1377, name: "GlobalGeneral2019" }, { id: 1378, name: "GlobalGeneral2019" }, { id: 1379, name: "GlobalGeneral2019" }, { id: 1380, name: "GlobalGeneral2019" }, { id: 1381, name: "GlobalGeneral2019" }, { id: 4353, name: "CommunitySeasonEight2017_Coin1" }, { id: 4354, name: "CommunitySeasonEight2017_Coin2" }, { id: 4355, name: "CommunitySeasonEight2017_Coin3" }, { id: 4356, name: "CommunitySeasonEight2017_Coin4" }, { id: 4674, name: "GlobalGeneral2020" }, { id: 4675, name: "GlobalGeneral2020" }, { id: 4676, name: "GlobalGeneral2020" }, { id: 4677, name: "GlobalGeneral2020" }, { id: 4678, name: "GlobalGeneral2020" }, { id: 4679, name: "GlobalGeneral2020" }, { id: 4737, name: "GlobalGeneral2021" }, { id: 4738, name: "GlobalGeneral2021" }, { id: 4739, name: "GlobalGeneral2021" }, { id: 4740, name: "GlobalGeneral2021" }, { id: 4741, name: "GlobalGeneral2021" }, { id: 4742, name: "GlobalGeneral2021" }, { id: 4819, name: "GlobalGeneral2022" }, { id: 4820, name: "GlobalGeneral2022" }, { id: 4821, name: "GlobalGeneral2022" }, { id: 4822, name: "GlobalGeneral2022" }, { id: 4823, name: "GlobalGeneral2022" }, { id: 4824, name: "GlobalGeneral2022" }, { id: 4873, name: "GlobalGeneral2023" }, { id: 4874, name: "GlobalGeneral2023" }, { id: 4875, name: "GlobalGeneral2023" }, { id: 4876, name: "GlobalGeneral2023" }, { id: 4877, name: "GlobalGeneral2023" }, { id: 4878, name: "GlobalGeneral2023" }
+        ];
+        let items = [];
+        const skinForm = document.getElementById('skinForm');
+        const agentForm = document.getElementById('agentForm');
+        const glovesForm = document.getElementById('glovesForm');
+        const caseForm = document.getElementById('caseForm');
+        const collectibleForm = document.getElementById('collectibleForm');
+        const stickerPlaceholder = document.getElementById('stickerPlaceholder');
+        const weaponSelect = document.getElementById('weaponSelect');
+        const qualitySelect = document.getElementById('qualitySelect');
+        const raritySelect = document.getElementById('raritySelect');
+        const finishInput = document.getElementById('finishInput');
+        const patternInput = document.getElementById('patternInput');
+        const floatInput = document.getElementById('floatInput');
+        const addSkinBtn = document.getElementById('addSkinBtn');
+        const agentSelect = document.getElementById('agentSelect');
+        const addAgentBtn = document.getElementById('addAgentBtn');
+        const glovesSelect = document.getElementById('glovesSelect');
+        const glovesFinish = document.getElementById('glovesFinish');
+        const glovesPattern = document.getElementById('glovesPattern');
+        const glovesFloat = document.getElementById('glovesFloat');
+        const addGlovesBtn = document.getElementById('addGlovesBtn');
+        const caseSelect = document.getElementById('caseSelect');
+        const addCaseBtn = document.getElementById('addCaseBtn');
+        const collectibleSelect = document.getElementById('collectibleSelect');
+        const addCollectibleBtn = document.getElementById('addCollectibleBtn');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const exportBtn = document.getElementById('exportBtn');
+        const lastIdInput = document.getElementById('lastIdInput');
+        const btnSkin = document.getElementById('btnSkin');
+        const btnAgent = document.getElementById('btnAgent');
+        const btnGloves = document.getElementById('btnGloves');
+        const btnCase = document.getElementById('btnCase');
+        const btnCollectible = document.getElementById('btnCollectible');
+        const btnSticker = document.getElementById('btnSticker');
+        const btnExit = document.getElementById('btnExit');
+
+        function populateSelect(select, data, valueKey = 'id', labelKey = 'name') {
+            select.innerHTML = '';
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item[valueKey];
+                option.textContent = item[labelKey];
+                select.appendChild(option);
+            });
+        }
+        function populateAgentSelect() {
+            agentSelect.innerHTML = '';
+            const ctGroup = document.createElement('optgroup');
+            ctGroup.label = 'CT Agents';
+            const tGroup = document.createElement('optgroup');
+            tGroup.label = 'T Agents';
+            agents.forEach(agent => {
+                const option = document.createElement('option');
+                option.value = agent.id;
+                option.textContent = agent.name;
+                if (agent.group === 'CT') ctGroup.appendChild(option);
+                else tGroup.appendChild(option);
+            });
+            agentSelect.appendChild(ctGroup);
+            agentSelect.appendChild(tGroup);
+        }
+        function populateRaritySelect() {
+            raritySelect.innerHTML = '';
+            rarities.forEach(r => {
+                const option = document.createElement('option');
+                option.value = r.id;
+                option.textContent = r.name;
+                option.style.color = r.color;
+                raritySelect.appendChild(option);
+            });
+        }
+        populateSelect(weaponSelect, weapons, 'id', 'name');
+        populateSelect(qualitySelect, qualities, 'id', 'name');
+        populateRaritySelect();
+        populateSelect(glovesSelect, gloves, 'id', 'name');
+        populateSelect(caseSelect, cases, 'id', 'name');
+        populateSelect(collectibleSelect, collectibles, 'id', 'name');
+        populateAgentSelect();
+
+        function setActiveButton(activeBtn) {
+            [btnSkin, btnAgent, btnGloves, btnCase, btnCollectible, btnSticker].forEach(btn => {
+                btn.classList.remove('primary');
+            });
+            activeBtn.classList.add('primary');
+        }
+        function hideAllForms() {
+            skinForm.classList.add('hidden');
+            agentForm.classList.add('hidden');
+            glovesForm.classList.add('hidden');
+            caseForm.classList.add('hidden');
+            collectibleForm.classList.add('hidden');
+            stickerPlaceholder.classList.add('hidden');
+        }
+
+        btnSkin.addEventListener('click', () => {
+            hideAllForms();
+            skinForm.classList.remove('hidden');
+            setActiveButton(btnSkin);
+        });
+        btnAgent.addEventListener('click', () => {
+            hideAllForms();
+            agentForm.classList.remove('hidden');
+            setActiveButton(btnAgent);
+        });
+        btnGloves.addEventListener('click', () => {
+            hideAllForms();
+            glovesForm.classList.remove('hidden');
+            setActiveButton(btnGloves);
+        });
+        btnCase.addEventListener('click', () => {
+            hideAllForms();
+            caseForm.classList.remove('hidden');
+            setActiveButton(btnCase);
+        });
+        btnCollectible.addEventListener('click', () => {
+            hideAllForms();
+            collectibleForm.classList.remove('hidden');
+            setActiveButton(btnCollectible);
+        });
+        btnSticker.addEventListener('click', () => {
+            hideAllForms();
+            stickerPlaceholder.classList.remove('hidden');
+            setActiveButton(btnSticker);
+        });
+        btnExit.addEventListener('click', () => {
+            items = [];
+            renderItems();
+            hideAllForms();
+            finishInput.value = 0;
+            patternInput.value = 0;
+            floatInput.value = 0.0;
+            glovesFinish.value = 0;
+            glovesPattern.value = 0;
+            glovesFloat.value = 0.0;
+            skinForm.classList.remove('hidden');
+            setActiveButton(btnSkin);
+            if (weaponSelect.options.length) weaponSelect.selectedIndex = 0;
+            if (qualitySelect.options.length) qualitySelect.selectedIndex = 0;
+            if (raritySelect.options.length) raritySelect.selectedIndex = 0;
+            if (glovesSelect.options.length) glovesSelect.selectedIndex = 0;
+            if (agentSelect.options.length) agentSelect.selectedIndex = 0;
+            if (caseSelect.options.length) caseSelect.selectedIndex = 0;
+            if (collectibleSelect.options.length) collectibleSelect.selectedIndex = 0;
+        });
+
+        addSkinBtn.addEventListener('click', () => {
+            const defIndex = parseInt(weaponSelect.value, 10);
+            const quality = parseInt(qualitySelect.value, 10);
+            const rarity = parseInt(raritySelect.value, 10);
+            const finish = parseFloat(finishInput.value);
+            const pattern = parseFloat(patternInput.value);
+            const floatVal = parseFloat(floatInput.value);
+            const displayName = weaponSelect.selectedOptions[0].textContent;
+            if (isNaN(defIndex) || isNaN(quality) || isNaN(rarity) || isNaN(finish) || isNaN(pattern) || isNaN(floatVal)) {
+                alert('Пожалуйста, заполните все поля корректными числами.');
+                return;
+            }
+            items.push({ type: 'skin', defIndex, quality, rarity, finish, pattern, float: floatVal, displayName });
+            renderItems();
+        });
+        addAgentBtn.addEventListener('click', () => {
+            const defIndex = parseInt(agentSelect.value, 10);
+            const agent = agents.find(a => a.id === defIndex);
+            if (!agent) return;
+            items.push({ type: 'agent', defIndex, quality: 5, rarity: 1, displayName: agent.name });
+            renderItems();
+        });
+        addGlovesBtn.addEventListener('click', () => {
+            const defIndex = parseInt(glovesSelect.value, 10);
+            const glovesItem = gloves.find(g => g.id === defIndex);
+            if (!glovesItem) return;
+            const finish = parseFloat(glovesFinish.value);
+            const pattern = parseFloat(glovesPattern.value);
+            const floatVal = parseFloat(glovesFloat.value);
+            if (isNaN(finish) || isNaN(pattern) || isNaN(floatVal)) {
+                alert('Пожалуйста, заполните все поля корректными числами.');
+                return;
+            }
+            items.push({ type: 'gloves', defIndex, quality: 5, rarity: 1, finish, pattern, float: floatVal, displayName: glovesItem.name });
+            renderItems();
+        });
+        addCaseBtn.addEventListener('click', () => {
+            const defIndex = parseInt(caseSelect.value, 10);
+            const caseItem = cases.find(c => c.id === defIndex);
+            if (!caseItem) return;
+            items.push({ type: 'case', defIndex, quality: 5, rarity: 1, displayName: caseItem.name });
+            renderItems();
+        });
+        addCollectibleBtn.addEventListener('click', () => {
+            const defIndex = parseInt(collectibleSelect.value, 10);
+            const collItem = collectibles.find(c => c.id === defIndex);
+            if (!collItem) return;
+            items.push({ type: 'collectible', defIndex, quality: 3, rarity: 6, displayName: collItem.name });
+            renderItems();
+        });
+
+        function deleteItem(index) {
+            items.splice(index, 1);
+            renderItems();
+        }
+        function renderItems() {
+            if (items.length === 0) {
+                itemsContainer.innerHTML = '<div class="placeholder">Пока ничего нет</div>';
+                exportBtn.disabled = true;
+                return;
+            }
+            exportBtn.disabled = false;
+            let html = '';
+            items.forEach((item, idx) => {
+                html += `<div class="item-card"><span class="item-title">${item.displayName}</span><button class="delete-btn" data-index="${idx}" title="Удалить">✕</button></div>`;
+            });
+            itemsContainer.innerHTML = html;
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.currentTarget.dataset.index;
+                    deleteItem(parseInt(index, 10));
+                });
+            });
+        }
+
+        exportBtn.addEventListener('click', () => {
+            if (items.length === 0) return;
+            const lastId = parseInt(lastIdInput.value, 10) || 0;
+            let content = '"items"\n{\n';
+            items.forEach((item, idx) => {
+                const order = lastId + idx + 1;
+                const inventory = idx + 1;
+                content += `\t"${order}"\n`;
+                content += `\t{\n`;
+                content += `\t\t"inventory"\t\t"${inventory}"\n`;
+                content += `\t\t"def_index"\t\t"${item.defIndex}"\n`;
+                content += `\t\t"level"\t\t"1"\n`;
+                content += `\t\t"quality"\t\t"${item.quality}"\n`;
+                content += `\t\t"flags"\t\t"0"\n`;
+                content += `\t\t"origin"\t\t"8"\n`;
+                content += `\t\t"in_use"\t\t"0"\n`;
+                content += `\t\t"rarity"\t\t"${item.rarity}"\n`;
+                if (item.type === 'skin' || item.type === 'gloves') {
+                    content += `\t\t"attributes"\n`;
+                    content += `\t\t{\n`;
+                    content += `\t\t\t"6"\t\t"${item.finish.toFixed(6)}"\n`;
+                    content += `\t\t\t"7"\t\t"${item.pattern.toFixed(6)}"\n`;
+                    content += `\t\t\t"8"\t\t"${item.float.toFixed(6)}"\n`;
+                    content += `\t\t}\n`;
+                }
+                content += `\t\t"equipped_state"\n`;
+                content += `\t\t{\n`;
+                content += `\t\t}\n`;
+                content += `\t}\n`;
+                if (idx < items.length - 1) content += `\n`;
+            });
+            content += '}\n';
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'inventory.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        hideAllForms();
+        skinForm.classList.remove('hidden');
+        setActiveButton(btnSkin);
+    })();
+</script>
+</body>
+</html>
